@@ -1,6 +1,7 @@
 
 import numpy as np
 import csv
+from sklearn.ensemble import RandomForestRegressor
 
 # Find set of supercategories, categories 
 supercategory_set = set()
@@ -32,7 +33,9 @@ for i in range (10000):
 	train_tags.append(row)
 	file.close()
 
-# Reading 1000-d train features
+print ("Finished loading tags")
+
+# Reading 1000-d train features 
 features_train = np.zeros((10000,1000))
 with open('features_train/features_resnet1000_train.csv', 'r') as csvfile:
 	csv_reader = csv.reader(csvfile)
@@ -43,6 +46,16 @@ with open('features_train/features_resnet1000_train.csv', 'r') as csvfile:
 			if i > 0:
 				row.append(float(line[i]))		
 		features_train[int(image_name)] = row
+
+query = []
+with open('query_glove.csv', 'r') as csvfile:
+	csv_reader = csv.reader(csvfile)
+	for line in csv_reader:
+		query.append(line)
+print ("Finished loading queries")
+
+clf = RandomForestRegressor()
+clf.fit(query,train_tags)
 
 
 
